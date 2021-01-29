@@ -1,0 +1,10 @@
+,Nr,Description_old,Status_old,Priority_old,Description_new,Status_new,Priority_new
+0,1,The tool shall detect if a cell is same in different sheet.,pending,1.0,The tool shall detect if a cell is same in different sheet.,pending,1.0
+1,2,The tool shall detect this for all cells which are same.,pending,2.0,The tool shall detect this for all cells which are same.,pending,2.0
+2,3,The tool shall be able to detect differences in the status column.,pending,3.0,The tool shall be able to detect differences in the status column.,started,3.0
+3,4,The tool shall detect differences in all columns,pending,1.0,The tool shall detect differences in all columns,pending,5.0
+4,5,"The tool shall compare only by one column, e.g. Nr, as reference.",pending,2.0,"The tool shall compare only by one column, e.g. Nr, as reference.",pending,2.0
+5,6,The tool shall ignore differences in spaces.,pending,3.0,The tool shall ignore differences in spaces   .,pending,3.0
+6,7,The tool shall ignore differences in signs.,pending,1.0,The tool shall ignore differences in signs!!!!!,pending,1.0
+7,8,"The tool shall detect rows, which where removed.",pending,2.0,,,
+8,9,,,,"The tool shall detect rows, which were added.",pending,3.0
