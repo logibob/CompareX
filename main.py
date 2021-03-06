@@ -11,6 +11,8 @@ from openpyxl import load_workbook
 import os
 # for writing several excel subsheets
 import xlsxwriter
+# time stamp
+import time
 
 
 
@@ -26,7 +28,7 @@ def fcn_input_filedata():
     file_name_old = input()
     if file_name_old == "":
         print("    -> default set")
-        file_name_old = "old.xlsx"
+        file_name_old = "C:\\Repositories\\CompareXTestfiles\\old.xlsx"
 
     print("\n   Enter index name:                    Default: 'Object ID'", end='')
     index_name_old = input()
@@ -38,7 +40,7 @@ def fcn_input_filedata():
     file_name_new = input()
     if file_name_new == "":
         print("    -> default set")
-        file_name_new = "new.xlsx"
+        file_name_new = "C:\\Repositories\\CompareXTestfiles\\new.xlsx"
     print("")
 
     print("   Enter index name:                    Default: 'Object ID'", end='')
@@ -67,7 +69,7 @@ def fcn_read_comparefiles(file_name_old, index_name_old, file_name_new, index_na
     except:
         print("An error occured, reading comparison file B.")
 
-    return(df_old, df_new)
+    return (df_old, df_new)
 
 
 
@@ -236,7 +238,8 @@ def main():
     df_stats = df_stats.transpose()
 
     # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter('ComparisonOutput.xlsx', engine='xlsxwriter')
+    timestr = time.strftime("%Y%m%d_%H%M%S")
+    writer = pd.ExcelWriter('C:\\Repositories\\CompareXTestfiles\\ComparisonOutput_' + timestr + '.xlsx', engine='xlsxwriter')
 
     # Write each dataframe to a different worksheet.
     df_stats.to_excel(writer, sheet_name='Stats')
