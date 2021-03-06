@@ -1,0 +1,52 @@
+-------------------------------
+>>>   Welcome to CompareX   <<<
+-------------------------------
+Feedback to arndt.seb@gmail.com
+
+Which revisions of tables do you want to compare?
+1. Enter file name of older version:
+old.xlsx
+
+2. Enter file name of newer version:
+new.xlsx
+
+Revision "old" read successfully.
+Revision "new" read successfully.
+
+>>> Common attributes:
+['Name', 'Age']
+
+>>> Deleted attributes:
+['City']
+
+>>> Added attributes:
+['Country']
+
+
+>>> Old revision (head only)
+
+        Name  Age   City
+Index
+Pers1  Peter   40   Kiel
+Pers2   Karl   32   Bonn
+Pers3    Sia   23  Koeln
+
+
+>>> New revision (head only)
+
+       Name  Age Country
+Index
+Pers1   Bob   80      DE
+Pers2  Karl   32      DE
+Pers4  Anne   31      US
+
+
+>>> New revision with differences (head only)
+
+      CmpRes    Changes         Name      Age (A)_Country (D)_City
+Index
+Pers1   DIFF  Name, Age  Peter → Bob  40 → 80          DE      NaN
+Pers2   SAME        NaN         Karl       32          DE      NaN
+Pers4    ADD        NaN         Anne       31          US      NaN
+Pers3    DEL        NaN          Sia       23         NaN    Koeln
+PS C:\Repositories\CompareX> 
