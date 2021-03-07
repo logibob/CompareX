@@ -13,7 +13,10 @@ import os
 import xlsxwriter
 # time stamp
 import time
-
+# for text similarity
+import nltk
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
 
 
 # input of file data like file name, index...
@@ -93,11 +96,30 @@ def fcn_columns_createlists(df_old, df_new):
     return(cols_old, cols_new, cols_common, cols_added, cols_deleted)
 
 
+def fcn_simiText(value_old,value_new):
+    dictOld = fcn_simiDict(value_old)
+    dictNew = fcn_simiDict(value_new)
 
-def fcn_columns_arrange(df_old, df_new):
-    
+    txtSimi = func_getSimi(dictOld,dictNew)
 
-    return(df_old, df_new, df_new_diff)
+    return(simiText)
+
+
+def fcn_simiDict(raw):
+    tokens = word_tokenize(raw)
+    words = [w.lower() for w in tokens]
+
+    porter = nltk.PorterStemmer()
+    stemmed_tokens = [porter.stem(t) for t in words]
+
+    stop_words = set(stopwords.words('teststopword'))
+    filtered_tokens = [w for w in stemmed_tokens if not w in stop_words]
+
+    count_nltk.defaultdict(int)
+    for word in filtered_tokens:
+        count[word] += 1
+    return count
+
 
 
 
@@ -122,9 +144,6 @@ def main():
 
     # create different lists of columns for further processing
     cols_old, cols_new, cols_common, cols_added, cols_deleted = fcn_columns_createlists(df_old, df_new)
-
-    
-    # compare if cells are same
     
 
     
@@ -168,6 +187,10 @@ def main():
                 value_new = df_new.loc[c_row,c_col]
                 # Initialize ComparisonResult entry with "same". "Diff" will be set if one different cell is detected. 
                 
+                if c_col == "Beschreibung":
+                    simiText = fcn_simiText(value_old,value_new)
+                    print(simiText)
+
                 # - SAME
                 if (value_old == value_new) or (value_new=="0" and value_old=="0"): #or (value_old is np.nan and value_new is np.nan):
                     df_new_diff.loc[c_row,c_col] = value_new
