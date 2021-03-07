@@ -14,59 +14,85 @@ import xlsxwriter
 # time stamp
 import time
 # for text similarity
-import nltk
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
+#import nltk
+#from nltk.tokenize import word_tokenize, sent_tokenize
+#from nltk.corpus import stopwords
 
 
 # input of file data like file name, index...
 def fcn_input_filedata():
     print("Which revisions of tables do you want to compare?")
-    print("\nAvailable files:")
-    arr = os.listdir('.')
-    print(arr)
-    print("")
 
-    print("\n1. Enter file name of older version:    Default: 'old.xlsx'", end='')
-    file_name_old = input()
-    if file_name_old == "":
+
+
+    # ENTER working directory
+    print("\n1.  Enter working directory:             ('Enter' for default: 'C:\CompareDir\')", end='')
+    working_directory = input()
+    if working_directory == "":
         print("    -> default set")
-        file_name_old = "C:\\Repositories\\CompareXTestfiles\\old.xlsx"
+        working_directory = "C:\\CompareDir\\"
 
-    print("\n   Enter index name:                    Default: 'Object ID'", end='')
+    print("\n    Available files:")
+    arr = os.listdir(working_directory)
+    print(arr)
+
+
+
+    # ENTER file old
+    print("\n2a. Enter file name of older version:    ('Enter' for default: 'old.xlsx')", end='')
+    file_old = input()
+    if file_old == "":
+        print("    -> default set")
+        file_old = "old.xlsx"
+    
+    # create filepath
+    print("\n    Path 'Old file': ")
+    file_path_old = working_directory + file_old
+    print("    " + file_path_old)
+
+    # ENTER index new
+    print("\n2b. Enter index name:                    ('Enter' for default: 'Object ID')", end='')
     index_name_old = input()
     if index_name_old == "":
         print("    -> default set")
         index_name_old = "Object ID"
 
-    print("\n2. Enter file name of newer version:    Default: 'new.xlsx'", end='')
-    file_name_new = input()
-    if file_name_new == "":
-        print("    -> default set")
-        file_name_new = "C:\\Repositories\\CompareXTestfiles\\new.xlsx"
-    print("")
 
-    print("   Enter index name:                    Default: 'Object ID'", end='')
+
+    # ENTER file old
+    print("\n3a. Enter file name of newer version:    ('Enter' for default: 'new.xlsx')", end='')
+    file_new = input()
+    if file_new == "":
+        print("    -> default set")
+        file_new = "new.xlsx"
+
+    # create filepath
+    print("\n    Path 'New file': ")
+    file_path_new = working_directory + file_new
+    print("    " + file_path_new)
+
+    # ENTER index new
+    print("\n3b. Enter index name:                    ('Enter' for default: 'Object ID')", end='')
     index_name_new = input()
     if index_name_new == "":
         print("    -> default set")
         index_name_new = "Object ID"
 
-    return(file_name_old, index_name_old, file_name_new, index_name_new)
+    return(file_path_old, index_name_old, file_path_new, index_name_new, working_directory)
 
 
 
-def fcn_read_comparefiles(file_name_old, index_name_old, file_name_new, index_name_new):
+def fcn_read_comparefiles(file_path_old, index_name_old, file_path_new, index_name_new):
     # open tables and read to data frames
     try:
-        df_old = pd.read_excel(file_name_old,"Tabelle1",index_col=index_name_old).fillna(0)
+        df_old = pd.read_excel(file_path_old,"Tabelle1",index_col=index_name_old).fillna(0)
         print("\nRevision \"old\" read successfully.")
         #df_old.to_excel("Output_Old.xlsx",'Old')    
     except:
         print("An error occured, reading comparison file A.")
 
     try:
-        df_new = pd.read_excel(file_name_new,"Tabelle1",index_col=index_name_new).fillna(0)
+        df_new = pd.read_excel(file_path_new,"Tabelle1",index_col=index_name_new).fillna(0)
         print("Revision \"new\" read successfully.")
         #df_new.to_excel("Output_New.xlsx",'New')
     except:
@@ -97,30 +123,10 @@ def fcn_columns_createlists(df_old, df_new):
 
 
 def fcn_simiText(value_old,value_new):
-    dictOld = fcn_simiDict(value_old)
-    dictNew = fcn_simiDict(value_new)
 
-    txtSimi = func_getSimi(dictOld,dictNew)
+    simiText = "to be implemented"
 
     return(simiText)
-
-
-def fcn_simiDict(raw):
-    tokens = word_tokenize(raw)
-    words = [w.lower() for w in tokens]
-
-    porter = nltk.PorterStemmer()
-    stemmed_tokens = [porter.stem(t) for t in words]
-
-    stop_words = set(stopwords.words('teststopword'))
-    filtered_tokens = [w for w in stemmed_tokens if not w in stop_words]
-
-    count_nltk.defaultdict(int)
-    for word in filtered_tokens:
-        count[word] += 1
-    return count
-
-
 
 
 # main program
@@ -135,11 +141,11 @@ def main():
 
 
     # call fcn to read file names, indices...
-    file_name_old, index_name_old, file_name_new, index_name_new = fcn_input_filedata()
+    file_path_old, index_name_old, file_path_new, index_name_new, working_directory = fcn_input_filedata()
 
 
     # call fcn to read data frames from comparison files
-    df_old, df_new = fcn_read_comparefiles(file_name_old, index_name_old, file_name_new, index_name_new)
+    df_old, df_new = fcn_read_comparefiles(file_path_old, index_name_old, file_path_new, index_name_new)
 
 
     # create different lists of columns for further processing
@@ -157,9 +163,9 @@ def main():
 
     # data frame with diffences, based on new data frame
     df_new_diff = df_new.copy()
-    df_new_diff.insert(0,"CmpRes",np.nan)
-    df_new_diff.insert(1,"Changes",np.nan)
-
+    df_new_diff.insert(0,"HardDiff",np.nan)
+    df_new_diff.insert(1,"SoftDiff",np.nan)
+    df_new_diff.insert(2,"Changes",np.nan)
 
     # run through new data frame to check for 
     #  - differences (case SAME / DIFF)
@@ -178,7 +184,7 @@ def main():
         if (c_row in df_old.index): #and (c_row in df_new.index):
             # IMPORTANT: Set "SAME" here already, before the columns are being run through!
             #            In the column loop, only one "diff" is enough, to set the complete sample to diff.
-            df_new_diff.loc[c_row,"CmpRes"] = ("SAME")
+            df_new_diff.loc[c_row,"HardDiff"] = ("SAME")
 
             # detailed cell check by running through common attributes (columns)
             for c_col in cols_common:
@@ -187,10 +193,12 @@ def main():
                 value_new = df_new.loc[c_row,c_col]
                 # Initialize ComparisonResult entry with "same". "Diff" will be set if one different cell is detected. 
                 
+                # CALL soft difference function
                 if c_col == "Beschreibung":
                     simiText = fcn_simiText(value_old,value_new)
-                    print(simiText)
+                    df_new_diff.loc[c_row,"SoftDiff"] = simiText
 
+                # CHECK hard difference
                 # - SAME
                 if (value_old == value_new) or (value_new=="0" and value_old=="0"): #or (value_old is np.nan and value_new is np.nan):
                     df_new_diff.loc[c_row,c_col] = value_new
@@ -205,13 +213,13 @@ def main():
                     else:
                         df_new_diff.loc[c_row,"Changes"] = df_new_diff.loc[c_row,"Changes"] + ", " + c_col
 
-                    df_new_diff.loc[c_row,"CmpRes"] = ("DIFF")
+                    df_new_diff.loc[c_row,"HardDiff"] = ("DIFF")
                     stats_changed = stats_changed + 1
           
         # - ADD
         # if sample is not in old dataframe (but in new one), it was newly added
         else:
-            df_new_diff.loc[c_row,"CmpRes"] = ("ADD")
+            df_new_diff.loc[c_row,"HardDiff"] = ("ADD")
             stats_added = stats_added + 1
 
 
@@ -222,7 +230,7 @@ def main():
         # - DEL
         if c_row_old not in df_new.index:
             df_new_diff = df_new_diff.append(df_old.loc[c_row_old,:])
-            df_new_diff.loc[c_row_old,"CmpRes"] = ("DEL")
+            df_new_diff.loc[c_row_old,"HardDiff"] = ("DEL")
             stats_removed = stats_removed + 1
 
 
@@ -262,7 +270,7 @@ def main():
 
     # Create a Pandas Excel writer using XlsxWriter as the engine.
     timestr = time.strftime("%Y%m%d_%H%M%S")
-    writer = pd.ExcelWriter('C:\\Repositories\\CompareXTestfiles\\ComparisonOutput_' + timestr + '.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter(working_directory + 'ComparisonOutput_' + timestr + '.xlsx', engine='xlsxwriter')
 
     # Write each dataframe to a different worksheet.
     df_stats.to_excel(writer, sheet_name='Stats')
@@ -272,7 +280,10 @@ def main():
 
     # Close the Pandas Excel writer and output the Excel file.
     writer.save()
+    print("\nFile writer closed.\nPress any key to finish file output.")
 
+    # Prevent command prompt closing
+    input()
 
 
 if __name__ == "__main__":
